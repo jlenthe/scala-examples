@@ -79,18 +79,34 @@ class Vector(_data: scala.collection.immutable.Vector[Double]) {
       */
     def dot(v: Vector): Either[Exception,Double] = map2(v)(_ * _).right.map(_.reduce(_ + _))
 
+    /** Computes the magnitude (that is [[https://en.wikipedia.org/wiki/Norm_(mathematics)#Euclidean_norm Euclidean norm]]
+      * of this Vector. 
+      */
     def magnitude(): Double = Math.sqrt(Vector.this.map(Math.pow(_, 2.0)).reduce(_ + _))
 
     def unitize(): Vector = Vector.this / Vector.this.magnitude
 
+    /** Adds this Vector to another.
+      *
+      * @param v The other vector to add.  It must contain the same 
+      * number of elements are this Vector or a Left[Exception] is returned.   
+      */
     def +(v: Vector): Either[Exception, Vector] = Vector.this.map2(v)(_ + _)
 
+    /** Subtracts another Vector from this Vector.
+      *  
+      * @param v The vector to subtract from this Vector.  It must contain the same 
+      * number of elements are this Vector or a Left[Exception] is returned.  
+      */
     def -(v: Vector): Either[Exception, Vector] = Vector.this.map2(v)(_ - _)
 
+    /** Multiples this Vector by another vector component-wise. */
     def *(v: Vector): Either[Exception, Vector] = Vector.this.map2(v)(_ * _)
 
+    /** Multiplies this vector by a scalar. */
     def *(s: Double): Vector = Vector.this.map(_ * s)
 
+    /** Divides this vector by a scalar. */
     def /(s: Double): Vector = Vector.this.map(_ / s)
 
     def length = Vector.this.data.length
