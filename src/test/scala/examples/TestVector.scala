@@ -218,6 +218,7 @@ class TestVector {
         }
     }
     
+    @Test
     def testScalarMultiply() = {
         val v = new Vector(2.0, 3.0)
         
@@ -226,7 +227,8 @@ class TestVector {
         assertEquals(new Vector(6.0, 9.0), w)
     }
     
-    def testScalaraDivide() = {
+    @Test
+    def testScalarDivide() = {
         val v = new Vector(4.0, 8.0)
         
         val w = v / 2.0
