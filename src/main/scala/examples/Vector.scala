@@ -79,11 +79,12 @@ class Vector(_data: scala.collection.immutable.Vector[Double]) {
       */
     def dot(v: Vector): Either[Exception,Double] = map2(v)(_ * _).right.map(_.reduce(_ + _))
 
-    /** Computes the magnitude (that is [[https://en.wikipedia.org/wiki/Norm_(mathematics)#Euclidean_norm Euclidean norm]]
+    /** Computes the magnitude (that is [[https://en.wikipedia.org/wiki/Norm_(mathematics)#Euclidean_norm Euclidean norm]])
       * of this Vector. 
       */
     def magnitude(): Double = Math.sqrt(Vector.this.map(Math.pow(_, 2.0)).reduce(_ + _))
 
+    /** Computes a unit vector by dividing this Vector by its magnitude. */
     def unitize(): Vector = Vector.this / Vector.this.magnitude
 
     /** Adds this Vector to another.
@@ -129,14 +130,17 @@ class Vector(_data: scala.collection.immutable.Vector[Double]) {
         else
             Left(new Exception("Both Vecs must be 3 element for cross product."))
 
+    /** Determines if this Vector is equivalent to the provided object. */
     override def equals(a: Any) = 
         a match {
             case v: Vector => Vector.this.data == v.data
             case _ => false
         }
     
+    /** Computes a hash code for this object. */
     override def hashCode() = Vector.this.data.hashCode()
             
+    /** Converts this Vector to a string representation. */
     override def toString =
         this.data.tail.fold("Vector [" + _data.head.toString)((s, d) => s + ", " + d.toString) + "]"
 }
