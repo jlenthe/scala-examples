@@ -235,4 +235,16 @@ class TestVector {
         
         assertEquals(new Vector(2.0, 4.0), w)
     }
+    
+    @Test
+    def testCrossProduct() = {
+        val u = new Vector(1.0, 2.0, 3.0)
+        
+        val v = u.cross(u)
+        
+        v match {
+            case Left(exception) => fail()
+            case Right(w) => assertEquals(new Vector(0.0, 0.0, 0.0), w)
+        }
+    }
 }

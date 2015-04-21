@@ -109,8 +109,18 @@ class Vector(_data: scala.collection.immutable.Vector[Double]) {
     /** Divides this vector by a scalar. */
     def /(s: Double): Vector = Vector.this.map(_ / s)
 
+    /** The number of dimensions of this vector, that is, how many elements it has */
     def length = Vector.this.data.length
 
+    /** Computes the [[https://en.wikipedia.org/wiki/cross_product cross]] product of this Vector 
+      * and the provided Vector.  This method must be called for a 3 element vector only or else
+      * an exception is returned in a Left.
+      *
+      * @param v The other vector in the cross product operation.  It must contain exactly 3 elements.
+      * 
+      * @return Either the dot product of this and v or an Exception describing
+      * the error that occurred.
+      */
     def cross(that: Vector): Either[Exception, Vector] =
         if (Vector.this.length == 3 && that.length == 3)
             Right(new Vector(this(1) * that(2) - this(2) * that(1), 
