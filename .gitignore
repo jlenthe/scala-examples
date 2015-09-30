@@ -9,10 +9,9 @@ gradle-app.setting
 
 # Ignore other stuff
 .cache
+.cache-main
+.cache-tests
 .settings
 .classpath
 .project
 bin
-gradle
-
-
