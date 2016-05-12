@@ -1,5 +1,5 @@
 apply plugin: 'scala'
-//apply plugin: 'eclipse'
+apply plugin: 'eclipse'
 
 version = '0.1-SNAPSHOT'
 

@@ -19,7 +19,7 @@ package examples
   *  
   * @constructor Creates the vector using the provided Scala library Vector
   */
-class Vector(_data: scala.collection.immutable.Vector[Double]) {
+class Vector(d: scala.collection.immutable.Vector[Double]) {
     
     /** Creates the vector using the provided Doubles as the vector elements. 
       * @param d Variable number of double arguments to place in the vector
@@ -27,7 +27,7 @@ class Vector(_data: scala.collection.immutable.Vector[Double]) {
     def this(d: Double*) = this(d.toVector)
 
     /** The raw elements of this Vector */
-    def data = _data
+    def data = d
 
     /** Invokes the provided function on corresponding pairs of elements from this Vector
       * and the Vector argument (that).
@@ -39,12 +39,10 @@ class Vector(_data: scala.collection.immutable.Vector[Double]) {
       * and that or an Exception describing the error that occurred.
       */
     def map2(that: Vector)(f: (Double, Double) => Double): Either[Exception, Vector] =
-        if (Vector.this.data.length == that.data.length)
-            Right(new Vector(((Vector.this.data, that.data)).zipped.map(f)))
+        if (this.data.length == that.data.length)
+            Right(new Vector(((this.data, that.data)).zipped.map(f)))
         else
-            Left(new Exception("Vector operation performed mismatching vector length. First length: %d. Second length: %d".format(
-                    this.data.length,
-                    that.data.length)))
+            Left(new Exception(s"Vector operation performed mismatching vector length. First length: ${data.length}. Second length: ${that.data.length}"))
 
     /** Invokes the provided function on every element of the Vector producing a new Vector 
       *
@@ -52,7 +50,7 @@ class Vector(_data: scala.collection.immutable.Vector[Double]) {
       * 
       * @return A new Vector containing the results of all the function invocations  
       */
-    def map(f: Double => Double): Vector = new Vector(Vector.this.data.map(f))
+    def map(f: Double => Double): Vector = new Vector(data.map(f))
 
     /** Reduces the vector using a reduction function.
       * 
@@ -60,13 +58,13 @@ class Vector(_data: scala.collection.immutable.Vector[Double]) {
       * 
       * @return The accumulated result
       */
-    def reduce(f: (Double, Double) => Double): Double = Vector.this.data.reduce(f)
+    def reduce(f: (Double, Double) => Double): Double = data.reduce(f)
 
     /** Gets the ith vector element
       * 
       * @param i The index of the Vector element to get
       */
-    def apply(i: Int): Double = Vector.this.data.apply(i)
+    def apply(i: Int): Double = data.apply(i)
 
     /** Computes the [[https://en.wikipedia.org/wiki/Dot_product dot]] product of this Vector 
       *  and the provided Vector
@@ -82,36 +80,36 @@ class Vector(_data: scala.collection.immutable.Vector[Double]) {
     /** Computes the magnitude (that is [[https://en.wikipedia.org/wiki/Norm_(mathematics)#Euclidean_norm Euclidean norm]])
       * of this Vector. 
       */
-    def magnitude(): Double = Math.sqrt(Vector.this.map(Math.pow(_, 2.0)).reduce(_ + _))
+    def magnitude(): Double = Math.sqrt(map(Math.pow(_, 2.0)).reduce(_ + _))
 
     /** Computes a unit vector by dividing this Vector by its magnitude. */
-    def unitize(): Vector = Vector.this / Vector.this.magnitude
+    def unitize(): Vector = this / this.magnitude
 
     /** Adds this Vector to another.
       *
       * @param v The other vector to add.  It must contain the same 
       * number of elements are this Vector or a Left[Exception] is returned.   
       */
-    def +(v: Vector): Either[Exception, Vector] = Vector.this.map2(v)(_ + _)
+    def +(v: Vector): Either[Exception, Vector] = map2(v)(_ + _)
 
     /** Subtracts another Vector from this Vector.
       *  
       * @param v The vector to subtract from this Vector.  It must contain the same 
       * number of elements are this Vector or a Left[Exception] is returned.  
       */
-    def -(v: Vector): Either[Exception, Vector] = Vector.this.map2(v)(_ - _)
+    def -(v: Vector): Either[Exception, Vector] = map2(v)(_ - _)
 
     /** Multiples this Vector by another vector component-wise. */
-    def *(v: Vector): Either[Exception, Vector] = Vector.this.map2(v)(_ * _)
+    def *(v: Vector): Either[Exception, Vector] = map2(v)(_ * _)
 
     /** Multiplies this vector by a scalar. */
-    def *(s: Double): Vector = Vector.this.map(_ * s)
+    def *(s: Double): Vector = map(_ * s)
 
     /** Divides this vector by a scalar. */
-    def /(s: Double): Vector = Vector.this.map(_ / s)
+    def /(s: Double): Vector = map(_ / s)
 
     /** The number of dimensions of this vector, that is, how many elements it has */
-    def length = Vector.this.data.length
+    def length = data.length
 
     /** Computes the [[https://en.wikipedia.org/wiki/cross_product cross]] product of this Vector 
       * and the provided Vector.  This method must be called for a 3 element vector only or else
@@ -125,22 +123,22 @@ class Vector(_data: scala.collection.immutable.Vector[Double]) {
     def cross(that: Vector): Either[Exception, Vector] =
         if (Vector.this.length == 3 && that.length == 3)
             Right(new Vector(this(1) * that(2) - this(2) * that(1), 
-                            this(2) * that(0) - this(0) * that(2),
-                            this(0) * that(1) - this(1) * that(0)))
+                             this(2) * that(0) - this(0) * that(2),
+                             this(0) * that(1) - this(1) * that(0)))
         else
             Left(new Exception("Both Vecs must be 3 element for cross product."))
 
     /** Determines if this Vector is equivalent to the provided object. */
     override def equals(a: Any) = 
         a match {
-            case v: Vector => Vector.this.data == v.data
+            case v: Vector => this.data == v.data
             case _ => false
         }
     
     /** Computes a hash code for this object. */
-    override def hashCode() = Vector.this.data.hashCode()
+    override def hashCode = data.hashCode
             
     /** Converts this Vector to a string representation. */
     override def toString =
-        this.data.tail.fold("Vector [" + _data.head.toString)((s, d) => s + ", " + d.toString) + "]"
+        data.tail.fold("Vector [" + data.head.toString)((s, d) => s + ", " + d.toString) + "]"
 }
