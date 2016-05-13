@@ -19,15 +19,12 @@ package examples
   *  
   * @constructor Creates the vector using the provided Scala library Vector
   */
-class Vector(d: scala.collection.immutable.Vector[Double]) {
+class Vector(val data: scala.collection.immutable.Vector[Double]) {
     
     /** Creates the vector using the provided Doubles as the vector elements. 
       * @param d Variable number of double arguments to place in the vector
       */
     def this(d: Double*) = this(d.toVector)
-
-    /** The raw elements of this Vector */
-    def data = d
 
     /** Invokes the provided function on corresponding pairs of elements from this Vector
       * and the Vector argument (that).
