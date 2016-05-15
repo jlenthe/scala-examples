@@ -72,7 +72,7 @@ class TestVector {
         
         w match {
             case Right(x) => fail()
-            case Left(exception) => assertEquals(expectedError, exception.getMessage())
+            case Left(errorMessage) => assertEquals(expectedError, errorMessage)
         }
     }
     
@@ -101,7 +101,7 @@ class TestVector {
         
         result match {
             case Right(d) => assertEquals(14.0, d, 0.0)
-            case Left(error) => fail(error.getMessage())
+            case Left(errorMessage) => fail(errorMessage)
         }   
     }
     
@@ -204,7 +204,7 @@ class TestVector {
         testOperationOnWrongSizeVectors((a: Vector, b: Vector) => a * b)
     }
     
-    def testOperationOnWrongSizeVectors(f: (Vector, Vector) => Either[Exception,Vector]) = {
+    def testOperationOnWrongSizeVectors(f: (Vector, Vector) => Either[String,Vector]) = {
         val u = new Vector(2.0, 3.0, 4.0);
         val v = new Vector(3.0, 4.0);
         
@@ -214,7 +214,7 @@ class TestVector {
         
         w match {
             case Right(x) => fail()
-            case Left(exception) => assertEquals(expectedError, exception.getMessage())
+            case Left(errorMessage) => assertEquals(expectedError, errorMessage)
         }
     }
     

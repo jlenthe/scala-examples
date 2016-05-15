@@ -33,13 +33,13 @@ class Vector(val data: scala.collection.immutable.Vector[Double]) {
       * Vector or a Left[Exception] is returned.
       * 
       * @return Either the Vector that results when f is invoked on corresponding pairs of Doubles from this
-      * and that or an Exception describing the error that occurred.
+      * and that or an error message describing the error that occurred.
       */
-    def map2(that: Vector)(f: (Double, Double) => Double): Either[Exception, Vector] =
+    def map2(that: Vector)(f: (Double, Double) => Double): Either[String, Vector] =
         if (this.data.length == that.data.length)
             Right(new Vector(((this.data, that.data)).zipped.map(f)))
         else
-            Left(new Exception(s"Vector operation performed mismatching vector length. First length: ${data.length}. Second length: ${that.data.length}"))
+            Left(s"Vector operation performed mismatching vector length. First length: ${data.length}. Second length: ${that.data.length}")
 
     /** Invokes the provided function on every element of the Vector producing a new Vector 
       *
@@ -72,7 +72,7 @@ class Vector(val data: scala.collection.immutable.Vector[Double]) {
       * @return Either the dot product of this and v or an Exception describing
       * the error that occurred.
       */
-    def dot(v: Vector): Either[Exception,Double] = map2(v)(_ * _).right.map(_.reduce(_ + _))
+    def dot(v: Vector): Either[String,Double] = map2(v)(_ * _).right.map(_.reduce(_ + _))
 
     /** Computes the magnitude (that is [[https://en.wikipedia.org/wiki/Norm_(mathematics)#Euclidean_norm Euclidean norm]])
       * of this Vector. 
@@ -87,17 +87,17 @@ class Vector(val data: scala.collection.immutable.Vector[Double]) {
       * @param v The other vector to add.  It must contain the same 
       * number of elements are this Vector or a Left[Exception] is returned.   
       */
-    def +(v: Vector): Either[Exception, Vector] = map2(v)(_ + _)
+    def +(v: Vector): Either[String, Vector] = map2(v)(_ + _)
 
     /** Subtracts another Vector from this Vector.
       *  
       * @param v The vector to subtract from this Vector.  It must contain the same 
       * number of elements are this Vector or a Left[Exception] is returned.  
       */
-    def -(v: Vector): Either[Exception, Vector] = map2(v)(_ - _)
+    def -(v: Vector): Either[String, Vector] = map2(v)(_ - _)
 
     /** Multiples this Vector by another vector component-wise. */
-    def *(v: Vector): Either[Exception, Vector] = map2(v)(_ * _)
+    def *(v: Vector): Either[String, Vector] = map2(v)(_ * _)
 
     /** Multiplies this vector by a scalar. */
     def *(s: Double): Vector = map(_ * s)

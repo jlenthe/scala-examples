@@ -20,8 +20,34 @@ import org.junit.Assert._
 
 class TestBisectionRootFinder {
   @Test
-  def testApply() {
+  def testApplySuccess() {
     val rf = new BisectionRootFinder(1e-6);
-    assertEquals(3.0, rf(x => x*x*x - 27.0, 0.0, 11.0), 1e-6)
+    val result = rf(x => x*x*x - 27.0, 0.0, 11.0)
+    result match {
+      case Right(r) => assertEquals(3.0, r, 1e-6)
+      case Left(errorMessage) => fail(errorMessage)
+    }
+    
+  }
+  
+  @Test
+  def testApplyReversedBracket() {
+    val rf = new BisectionRootFinder(1e-6);
+    val result = rf(x => x*x*x - 27.0, 11.0, 1.0)
+    result match {
+      case Right(r) => assertEquals(3.0, r, 1e-6)
+      case Left(errorMessage) => fail(errorMessage)
+    }
+    
+  }
+  
+  @Test
+  def testApplyNotBracketed() {
+    val rf = new BisectionRootFinder(1e-6);
+    val result = rf(x => x*x*x - 27.0, 5.0, 11.0)
+    result match {
+      case Right(r) => fail(s"Should have gotten an error. The value returned was ${r}.")
+      case Left(errorMessage) => assertEquals("The input function points did not bracket the root.  First point (a, fa) = (5.0, 98.0).  Second point (b, fb) = (11.0, 1304.0).", errorMessage)
+    }
   }
 }
