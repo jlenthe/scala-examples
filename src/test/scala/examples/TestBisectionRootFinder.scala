@@ -27,18 +27,6 @@ class TestBisectionRootFinder {
       case Right(r) => assertEquals(3.0, r, 1e-6)
       case Left(errorMessage) => fail(errorMessage)
     }
-    
-  }
-  
-  @Test
-  def testApplyReversedBracket() {
-    val rf = new BisectionRootFinder(1e-6);
-    val result = rf(x => x*x*x - 27.0, 11.0, 1.0)
-    result match {
-      case Right(r) => assertEquals(3.0, r, 1e-6)
-      case Left(errorMessage) => fail(errorMessage)
-    }
-    
   }
   
   @Test

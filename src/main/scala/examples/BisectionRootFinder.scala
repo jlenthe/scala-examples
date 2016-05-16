@@ -2,8 +2,13 @@ package examples
 
 import scala.math._
 
-class BisectionRootFinder (tol: Double) {
-  def apply(f: Double => Double, a: Double, b: Double): Either[String,Double] = {
+trait RootFinder {
+    def apply(f: Double => Double, a: Double, b: Double): Either[String,Double]
+}
+
+class BisectionRootFinder (tol: Double) extends RootFinder {
+  
+  override def apply(f: Double => Double, a: Double, b: Double): Either[String,Double] = {
     def bisect(a: Double, fa: Double, b: Double, fb: Double): Double = {
       val c = (a + b) / 2
       if (abs(a - b) < tol) {
