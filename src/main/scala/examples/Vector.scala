@@ -35,11 +35,11 @@ class Vector(val data: scala.collection.immutable.Vector[Double]) {
       * @return Either the Vector that results when f is invoked on corresponding pairs of Doubles from this
       * and that or an error message describing the error that occurred.
       */
-    def map2(that: Vector)(f: (Double, Double) => Double): Either[String, Vector] =
+    def map2(that: Vector)(f: (Double, Double) => Double): Vector =
         if (this.data.length == that.data.length)
-            Right(new Vector(((this.data, that.data)).zipped.map(f)))
+            new Vector(((this.data, that.data)).zipped.map(f))
         else
-            Left(s"Vector operation performed mismatching vector length. First length: ${data.length}. Second length: ${that.data.length}")
+            throw new IllegalArgumentException(s"Vector operation performed mismatching vector length. First length: ${data.length}. Second length: ${that.data.length}")
 
     /** Invokes the provided function on every element of the Vector producing a new Vector 
       *
@@ -72,7 +72,7 @@ class Vector(val data: scala.collection.immutable.Vector[Double]) {
       * @return Either the dot product of this and v or an Exception describing
       * the error that occurred.
       */
-    def dot(v: Vector): Either[String,Double] = map2(v)(_ * _).right.map(_.reduce(_ + _))
+    def dot(v: Vector): Double = map2(v)(_ * _).reduce(_ + _)
 
     /** Computes the magnitude (that is [[https://en.wikipedia.org/wiki/Norm_(mathematics)#Euclidean_norm Euclidean norm]])
       * of this Vector. 
@@ -87,17 +87,17 @@ class Vector(val data: scala.collection.immutable.Vector[Double]) {
       * @param v The other vector to add.  It must contain the same 
       * number of elements are this Vector or a Left[Exception] is returned.   
       */
-    def +(v: Vector): Either[String, Vector] = map2(v)(_ + _)
+    def +(v: Vector): Vector = map2(v)(_ + _)
 
     /** Subtracts another Vector from this Vector.
       *  
       * @param v The vector to subtract from this Vector.  It must contain the same 
       * number of elements are this Vector or a Left[Exception] is returned.  
       */
-    def -(v: Vector): Either[String, Vector] = map2(v)(_ - _)
+    def -(v: Vector): Vector = map2(v)(_ - _)
 
     /** Multiples this Vector by another vector component-wise. */
-    def *(v: Vector): Either[String, Vector] = map2(v)(_ * _)
+    def *(v: Vector): Vector = map2(v)(_ * _)
 
     /** Multiplies this vector by a scalar. */
     def *(s: Double): Vector = map(_ * s)
@@ -117,13 +117,13 @@ class Vector(val data: scala.collection.immutable.Vector[Double]) {
       * @return Either the dot product of this and v or an Exception describing
       * the error that occurred.
       */
-    def cross(that: Vector): Either[Exception, Vector] =
+    def cross(that: Vector): Vector =
         if (Vector.this.length == 3 && that.length == 3)
-            Right(new Vector(this(1) * that(2) - this(2) * that(1), 
-                             this(2) * that(0) - this(0) * that(2),
-                             this(0) * that(1) - this(1) * that(0)))
+            new Vector(this(1) * that(2) - this(2) * that(1), 
+                       this(2) * that(0) - this(0) * that(2),
+                       this(0) * that(1) - this(1) * that(0))
         else
-            Left(new Exception("Both Vecs must be 3 element for cross product."))
+            throw new Exception("Both Vecs must be 3 element for cross product.")
 
     /** Determines if this Vector is equivalent to the provided object. */
     override def equals(a: Any) = 
@@ -138,4 +138,12 @@ class Vector(val data: scala.collection.immutable.Vector[Double]) {
     /** Converts this Vector to a string representation. */
     override def toString =
         data.tail.fold("Vector [" + data.head.toString)((s, d) => s + ", " + d.toString) + "]"
+}
+
+object Vector {
+    
+    /** Creates the vector using the provided Doubles as the vector elements. 
+      * @param d Variable number of double arguments to place in the vector
+      */
+    def apply(d: Double*) = new Vector(d.toVector)
 }
